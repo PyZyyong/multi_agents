@@ -30,20 +30,23 @@ def python_repl(
     return f"Successfully executed:\n```python\n{code}\n```\n"
 
 
-# client = MultiServerMCPClient(
-#         {
-#             "weather": {
-#                 "command": "python",
-#                 "args": ["mcp_server.py"],
-#                 "transport": "stdio",
-#             }
-#             # "others": {
-#             #     # make sure you start your weather server on port 8000
-#             #     "url": "http://localhost:8000/sse",
-#             #     "transport": "sse",
-#             # }
-#         }
-#     )
+client = MultiServerMCPClient(
+        {
+            "weather": {
+                "command": "python",
+                "args": ["weather_mcp_server.py"],
+                "transport": "stdio",
+            }
+            # "others": {
+            #     # make sure you start your weather server on port 8000
+            #     "url": "http://localhost:8000/sse",
+            #     "transport": "sse",
+            # }
+        }
+    )
+
+async def weather_mcp_tools():
+    return await client.get_tool("weather")
 
 @tool(
     "get_weather_warning",
@@ -54,10 +57,10 @@ async def get_weather_warning(city: str):
 
 @tool(
     "get_daily_forecast",
-    description="根据提供的城市名，查询天气信息",
+    description="根据提供的城市名，和需要查询的天数，查询天气信息",
 )
-async def get_daily_forecast(city: str):
-    return await qweather_tool.get_daily_forecast(city)
+async def get_daily_forecast(city: str, days: int = 3):
+    return await qweather_tool.get_daily_forecast(city, days)
 
 tools = [tavily_tool, python_repl, get_daily_forecast, get_weather_warning]
 

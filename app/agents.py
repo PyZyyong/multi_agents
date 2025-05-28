@@ -66,18 +66,6 @@ research_agent = create_react_agent(
     name="research_assistant"
 )
 
-# research_agent = create_agent(
-#     deepseek_model,
-#     [tavily_tool],  # 研究智能体使用 Tavily 搜索工具
-#     tool_message=(
-#         "在使用搜索引擎之前，请仔细思考并明确查询内容。然后，进行一次搜索，一次性解决查询的所有需求。"
-#     ),
-#     custom_notice=(
-#         "注意:\n"
-#         "只需收集和整理信息。然后将整理的信息交给其他助手去继续处理。"
-#     ),
-# )
-
 chart_agent = create_react_agent(
     model=deepseek_model,
     tools=[python_repl],
@@ -93,7 +81,7 @@ weather_agent = create_react_agent(
     需保持专业且口语化的表达，必要时用符号/表情辅助理解（如🌤️⛈️）。
     **你可以使用的工具**
     get_weather_warning: 根据提供的城市名查询天气预警信息。
-    get_daily_forecast: 根据提供的城市名，查询最近日期的天气信息如一周、三天内、五天内等。
+    get_daily_forecast: 根据提供的城市名，查询最近日期的天气信息如一周、三天内、五天内、一个月等。
     """,
     name="weather_assistant"
 )
@@ -111,14 +99,7 @@ supervisor_agent = create_supervisor(
 )
 
 supervisor = supervisor_agent.compile(checkpointer=checkopint)
-# weather_agent = create_agent(
-#     deepseek_model,
-#     mcp_tools,
-#     tool_message="""你是一个专注于天气信息的助手，有以下查询天气的工具供你使用：get_weather_warning(city),get_daily_forecast(city),\n
-#     你需要仔细思考用户的天气查询请求，然后使用一个或者多个工具来完成查询任务，最后将所有结果汇总，整理成结构清晰，易于理解的数据结构。""",
-#     custom_notice="注意:\n"
-#     "只需要输出建议，然后将建议交给其他助手处理"
-# )
+
 from IPython.display import display, Image
 display(
     Image(
