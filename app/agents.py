@@ -127,7 +127,8 @@ if __name__ == "__main__":
                     if messages := chunk.get(s):
                         break
                 if messages:
-                    print(messages['messages'][-1].content)
+                    print(messages['messages'][-1].pretty_print())
                     print("\n")
 
     asyncio.run(main())
+
