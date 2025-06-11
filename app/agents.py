@@ -4,7 +4,7 @@ import operator
 from typing import TypedDict, Annotated, Sequence
 from langchain_openai import ChatOpenAI
 from langchain_deepseek import ChatDeepSeek
-from langchain_core.messages import BaseMessage, HumanMessage, ToolMessage
+from langchain_core.messages import BaseMessage, HumanMessage, ToolMessage, AIMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langgraph_supervisor import create_supervisor
 from langgraph.graph import END, StateGraph, START
@@ -77,8 +77,8 @@ chart_agent = create_react_agent(
 weather_agent = create_react_agent(
     model=deepseek_model,
     tools=[get_weather_warning, get_daily_forecast],
-    prompt="""你是一个智能天气查询助手，核心任务是通过调用内置工具获取实时数据，并转化为用户友好的信息。\n
-    需保持专业且口语化的表达，必要时用符号/表情辅助理解（如🌤️⛈️）。
+    prompt="""你是一个智能天气查询助手，核心任务是通过调用内置工具获取实时数据，并转化为结构清晰的图表结构，\n
+    图表结构内应该详细的记录天气信息的各个指标，帮助用户理解。需保持专业且口语化的表达，必要时用符号/表情辅助理解（如🌤️⛈️）。
     **你可以使用的工具**
     get_weather_warning: 根据提供的城市名查询天气预警信息。
     get_daily_forecast: 根据提供的城市名，查询最近日期的天气信息如一周、三天内、五天内、一个月等。
@@ -119,16 +119,14 @@ if __name__ == "__main__":
                 {"messages": ("user", user_input)},
                 config={"configurable": {"thread_id": "current_user_id"}}
             ):
-                # "content": "郑州最近一周的天气怎么样？适合出门吗？"
-                # "content": "获取中国2000-2020年GDP数据，并生成折线图。"
-                # "content": "总结出langgraph的5个核心功能点，并给出python代码使用示例。"
                 sender = {'manager', 'chart_assistant', 'weather_assistant', 'research_assistant'}
                 for s in sender:
                     if messages := chunk.get(s):
                         break
                 if messages:
-                    print(messages['messages'][-1].pretty_print())
-                    print("\n")
+                    last_message = messages['messages'][-1]
+                    if not isinstance(last_message, ToolMessage):
+                        # print(last_message.pretty_print())
+                        print(last_message)
 
     asyncio.run(main())
-
